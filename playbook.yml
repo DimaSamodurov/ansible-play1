@@ -1,0 +1,8 @@
+---
+- hosts: "{{ lookup('ec2_hosts', tags: ['a', 'b']) }}"
+  remote_user: ubuntu
+
+  tasks:
+
+  - name: Display hostname
+    shell: hostname
