@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ lookup('ec2_hosts', tags: ['a', 'b']) }}"
+- hosts: "{{ lookup('ec2filter', {'tags': ['test1']}) }}"
   remote_user: ubuntu
 
   tasks:
