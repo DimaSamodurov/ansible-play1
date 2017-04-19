@@ -13,10 +13,13 @@ Sample uses your local AWS configuration, e.g. `~/.aws/config` and `~/.aws/crede
 
 ## Plugin usage
 
+Within the playbook you can filter out hosts to be processed:
+
+    hosts: "{{ lookup('ec2instances', {'tags': ['test1']}) }}"
 
 ## Run the playbook
 
-    ansible-playbook playbook.yml
+    ansible-playbook hello-playbook.yml
 
 
 

@@ -1,0 +1,10 @@
+---
+- hosts: "{{ lookup('ec2instances', {'tags': ['test1']}) }}"
+  remote_user: ubuntu
+
+  tasks:
+  - name: Display hostname
+    shell: echo Hello from `hostname`
+    register: output
+
+  - debug: var=output.stdout_lines
