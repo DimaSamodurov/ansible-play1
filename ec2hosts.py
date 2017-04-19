@@ -7,31 +7,50 @@ import argparse
 
 
 class Ec2Hosts(object):
-    def aws_instances_description(self):
-        if not hasattr(self, 'instances'):
-            self.instances = json.loads(self.aws_describe_instances())
-        return self.instances
+    def instances_description(self):
+        if not hasattr(self, '_instances'):
+            self._instances = json.loads(self.aws_describe_instances())
+        return self._instances
 
     def aws_describe_instances(self):
         return subprocess.check_output(["aws", "ec2", "describe-instances"])
 
-    def get_ec2_hosts(self):
+    def ec2_hosts(self):
         def get_instances(reservation): return reservation['Instances']
 
         def get_dns_name(instance): return instance['PublicDnsName']
 
-        groups = self.aws_instances_description()
+        groups = self.instances_description()
 
         instances = reduce(operator.add, map(get_instances, groups['Reservations']))
 
         names = map(get_dns_name, instances)
 
         return names
+    
+    # Returns host variables in format {host1: {variables}, host2: {variables}}
+    def hostvars(self):
+        def get_instances(reservation): return reservation['Instances']
+
+        def get_dns_name(instance): return instance['PublicDnsName']
+
+        groups = self.instances_description()
+
+        instances = reduce(operator.add, map(get_instances, groups['Reservations']))
+
+        arr = {}
+        for i in instances:
+            arr[i['PublicDnsName']] = i
+
+        return arr
+        
 
     def get_ec2_metadata(self):
         meta = {
-            "all": self.get_ec2_hosts(),
-            "_meta": self.aws_instances_description()
+            "all": self.ec2_hosts(),
+            "_meta": {
+                "hostvars": self.hostvars()
+            }
         }
         return meta
 
