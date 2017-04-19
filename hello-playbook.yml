@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ lookup('ec2instances', {'tags': ['test1']}) }}"
+- hosts: "{{ lookup('ec2instances', {'Project': 'cms'}) }}"
   remote_user: ubuntu
 
   tasks:
